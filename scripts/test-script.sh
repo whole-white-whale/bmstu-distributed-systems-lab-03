@@ -2,21 +2,20 @@
 
 set -e
 
-variant=${1:-${VARIANT}}
-service=${2:-${SERVICE_NAME}}
-port=${3:-${PORT_NUMBER}}
+service=${1:-${SERVICE_NAME}}
+port=${2:-${PORT_NUMBER}}
 
 path=$(dirname "$0")
 
 timed() {
   end=$(date +%s)
-  dt=$(("$end" - $1))
-  dd=$(("$dt" / 86400))
-  dt2=$(("$dt" - 86400 * "$dd"))
-  dh=$(("$dt2" / 3600))
-  dt3=$(("$dt2" - 3600 * "$dh"))
-  dm=$(("$dt3" / 60))
-  ds=$(("$dt3" - 60 * "$dm"))
+  dt=$(($end - $1))
+  dd=$(($dt / 86400))
+  dt2=$(($dt - 86400 * $dd))
+  dh=$(($dt2 / 3600))
+  dt3=$(($dt2 - 3600 * $dh))
+  dm=$(($dt3 / 60))
+  ds=$(($dt3 - 60 * $dm))
 
   LC_NUMERIC=C printf "\nTotal runtime: %02d min %02d seconds\n" "$dm" "$ds"
 }
@@ -25,9 +24,9 @@ success() {
   newman run \
     --delay-request=100 \
     --folder=success \
-    --export-environment "$variant"/postman/environment.json \
-    --environment "$variant"/postman/environment.json \
-    "$variant"/postman/collection.json
+    --export-environment postman/environment.json \
+    --environment postman/environment.json \
+    postman/collection.json
 }
 
 step() {
@@ -44,9 +43,9 @@ step() {
   newman run \
     --delay-request=100 \
     --folder=step"$step" \
-    --export-environment "$variant"/postman/environment.json \
-    --environment "$variant"/postman/environment.json \
-    "$variant"/postman/collection.json
+    --export-environment postman/environment.json \
+    --environment postman/environment.json \
+    postman/collection.json
 
   printf "=== Step %d completed ===\n" "$step"
 }
